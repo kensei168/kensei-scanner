@@ -182,16 +182,16 @@ async function mulaiKamera() {
 
         qrbox: function(width, height) {
 
-          const w =
-            Math.floor(width * 0.80);
+  const size = Math.floor(
+    Math.min(width, height) * 0.70
+  );
 
-          const h =
-            Math.floor(w * 0.45);
+  return {
+    width: size,
+    height: size
+  };
 
-          return {
-            width: w,
-            height: h
-          };
+}
 
         }
       },
