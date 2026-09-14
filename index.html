@@ -1,1 +1,314 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
 
+  <meta name="viewport"
+        content="width=device-width,
+        initial-scale=1.0,
+        maximum-scale=1.0">
+
+  <title>Scanner Presensi LPK Kensei</title>
+
+  <script src="https://unpkg.com/html5-qrcode"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+    }
+
+    .card {
+      max-width: 450px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.08);
+      text-align: center;
+    }
+
+    .brand {
+      font-size: 13px;
+      letter-spacing: 2px;
+      color: #888;
+    }
+
+    h1 {
+      color: #A52424;
+      margin-bottom: 5px;
+    }
+
+    .desc {
+      color: #777;
+      font-size: 14px;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    #reader {
+      width: 100%;
+      overflow: hidden;
+      border-radius: 15px;
+      margin-top: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #startBtn {
+      background: #A52424;
+      color: white;
+    }
+
+    #stopBtn {
+      background: #eee;
+      color: #444;
+      margin-top: 10px;
+      display: none;
+    }
+
+    #status {
+      margin-top: 18px;
+      padding: 15px;
+      border-radius: 12px;
+      background: #f5f5f5;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .success {
+      background: #e8f7ed !important;
+      color: #14702d;
+    }
+
+    .error {
+      background: #ffecec !important;
+      color: #a40000;
+    }
+
+    .loading {
+      background: #fff7df !important;
+      color: #755500;
+    }
+
+    .hasil {
+      font-size: 22px;
+      font-weight: bold;
+      margin-top: 7px;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <div class="brand">
+    LPK KENSEI アカデミー
+  </div>
+
+  <h1>Scanner Presensi</h1>
+
+  <div class="desc">
+    Arahkan kamera ke barcode atau QR Code siswa.
+  </div>
+
+  <button id="startBtn" onclick="mulaiKamera()">
+    📷 Aktifkan Kamera
+  </button>
+
+  <button id="stopBtn" onclick="stopKamera()">
+    ⏹ Tutup Kamera
+  </button>
+
+  <div id="reader"></div>
+
+  <div id="status">
+    Kamera belum diaktifkan.
+  </div>
+
+</div>
+
+
+<script>
+
+let scanner = null;
+let aktif = false;
+
+async function mulaiKamera() {
+
+  const status =
+    document.getElementById("status");
+
+  const startBtn =
+    document.getElementById("startBtn");
+
+  const stopBtn =
+    document.getElementById("stopBtn");
+
+  status.className = "loading";
+
+  status.innerHTML =
+    "⏳ Meminta izin kamera...";
+
+  try {
+
+    scanner =
+      new Html5Qrcode("reader");
+
+    await scanner.start(
+
+      {
+        facingMode: "environment"
+      },
+
+      {
+        fps: 10,
+
+        qrbox: function(width, height) {
+
+          const w =
+            Math.floor(width * 0.80);
+
+          const h =
+            Math.floor(w * 0.45);
+
+          return {
+            width: w,
+            height: h
+          };
+
+        }
+      },
+
+      function(decodedText) {
+
+        status.className =
+          "success";
+
+        status.innerHTML =
+          "✅ BARCODE TERBACA" +
+          "<div class='hasil'>" +
+          aman(decodedText) +
+          "</div>";
+
+      },
+
+      function(errorMessage) {
+
+        // Abaikan error ketika
+        // barcode belum ditemukan.
+
+      }
+
+    );
+
+    aktif = true;
+
+    startBtn.style.display =
+      "none";
+
+    stopBtn.style.display =
+      "block";
+
+    status.className = "";
+
+    status.innerHTML =
+      "📷 Kamera aktif.<br>" +
+      "Silakan scan barcode siswa.";
+
+  }
+
+  catch(error) {
+
+    console.error(error);
+
+    status.className =
+      "error";
+
+    status.innerHTML =
+      "❌ Kamera gagal dibuka.<br><br>" +
+      aman(
+        error.message ||
+        String(error)
+      );
+
+  }
+
+}
+
+
+async function stopKamera() {
+
+  if (
+    scanner &&
+    aktif
+  ) {
+
+    try {
+
+      await scanner.stop();
+
+      scanner.clear();
+
+    }
+
+    catch(e) {
+
+      console.log(e);
+
+    }
+
+  }
+
+  aktif = false;
+
+  document
+    .getElementById("startBtn")
+    .style.display =
+    "block";
+
+  document
+    .getElementById("stopBtn")
+    .style.display =
+    "none";
+
+  document
+    .getElementById("status")
+    .innerHTML =
+    "Kamera ditutup.";
+
+}
+
+
+function aman(text) {
+
+  const div =
+    document.createElement("div");
+
+  div.textContent =
+    text;
+
+  return div.innerHTML;
+
+}
+
+</script>
+
+</body>
+</html>
