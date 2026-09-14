@@ -1,18 +1,24 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
+
   <meta charset="UTF-8">
 
-  <meta name="viewport"
-        content="width=device-width,
-        initial-scale=1.0,
-        maximum-scale=1.0">
+  <meta
+    name="viewport"
+    content="width=device-width,
+    initial-scale=1.0,
+    maximum-scale=1.0"
+  >
 
   <title>Scanner Presensi LPK Kensei</title>
 
   <script src="https://unpkg.com/html5-qrcode"></script>
 
+
   <style>
+
     * {
       box-sizing: border-box;
     }
@@ -20,158 +26,296 @@
     body {
       margin: 0;
       padding: 20px;
+
       font-family:
         -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
         Arial,
         sans-serif;
+
       background: #f5f5f5;
       color: #222;
     }
 
+
     .card {
+
       max-width: 450px;
+
       margin: auto;
+
       background: #fff;
+
       padding: 25px;
+
       border-radius: 20px;
-      box-shadow: 0 8px 30px rgba(0,0,0,.08);
+
+      box-shadow:
+        0 8px 30px
+        rgba(0,0,0,.08);
+
       text-align: center;
+
     }
+
 
     .brand {
+
       font-size: 13px;
+
       letter-spacing: 2px;
+
       color: #888;
+
       margin-bottom: 5px;
+
     }
+
 
     h1 {
+
       color: #A52424;
+
       margin: 8px 0 5px;
+
     }
+
 
     .desc {
+
       color: #777;
+
       font-size: 14px;
+
       line-height: 1.5;
+
       margin-bottom: 20px;
+
     }
+
 
     input {
+
       width: 100%;
+
       padding: 14px;
+
       border: 1px solid #ddd;
+
       border-radius: 12px;
+
       font-size: 16px;
+
       text-align: center;
+
       outline: none;
+
       margin-bottom: 10px;
+
     }
+
 
     input:focus {
+
       border-color: #A52424;
+
     }
 
+
     button {
+
       width: 100%;
+
       padding: 15px;
+
       border: none;
+
       border-radius: 12px;
+
       font-size: 16px;
+
       font-weight: bold;
+
       cursor: pointer;
+
     }
+
 
     #loginBtn,
     #startBtn {
+
       background: #A52424;
+
       color: white;
+
     }
+
 
     #stopBtn,
     #logoutBtn {
+
       background: #eee;
+
       color: #444;
+
       margin-top: 10px;
+
     }
+
 
     #stopBtn {
+
       display: none;
+
     }
+
 
     #reader {
+
       width: 100%;
+
       overflow: hidden;
+
       border-radius: 15px;
+
       margin-top: 15px;
+
       background: #111;
+
     }
 
+
     #reader video {
+
       object-fit: cover !important;
+
     }
+
 
     #status,
     #loginStatus {
+
       margin-top: 18px;
+
       padding: 15px;
+
       border-radius: 12px;
+
       background: #f5f5f5;
+
       font-size: 14px;
+
       line-height: 1.5;
+
     }
+
 
     .success {
+
       background: #e8f7ed !important;
+
       color: #14702d;
+
     }
+
 
     .error {
+
       background: #ffecec !important;
+
       color: #a40000;
+
     }
+
 
     .loading {
+
       background: #fff7df !important;
+
       color: #755500;
+
     }
+
 
     .hasil {
-      font-size: 22px;
+
+      font-size: 24px;
+
       font-weight: bold;
+
       margin-top: 7px;
+
       letter-spacing: 1px;
+
     }
+
 
     .footer {
+
       margin-top: 20px;
+
       font-size: 11px;
+
       color: #aaa;
+
       line-height: 1.5;
+
     }
 
+
     #scannerPage {
+
       display: none;
+
     }
+
+
+    /*
+    Form Google disembunyikan
+    */
+
+    #googleFormContainer {
+
+      display: none;
+
+    }
+
   </style>
+
 </head>
+
+
 
 <body>
 
-<!-- LOGIN PAGE -->
-<div id="loginPage" class="card">
+
+<!-- =====================================
+     LOGIN
+===================================== -->
+
+<div
+  id="loginPage"
+  class="card"
+>
 
   <div class="brand">
     LPK KENSEI アカデミー
   </div>
 
-  <h1>🔐 Kensei Scanner</h1>
+
+  <h1>
+    🔐 Kensei Scanner
+  </h1>
+
 
   <div class="desc">
-    Masukkan password untuk membuka scanner presensi.
+
+    Masukkan password untuk membuka
+    scanner presensi.
+
   </div>
+
 
   <input
     type="password"
@@ -180,481 +324,974 @@
     onkeydown="if(event.key==='Enter') login()"
   >
 
-  <button id="loginBtn" onclick="login()">
+
+  <button
+    id="loginBtn"
+    onclick="login()"
+  >
+
     MASUK
+
   </button>
 
+
   <div id="loginStatus">
+
     Silakan login.
+
   </div>
 
 </div>
 
 
-<!-- SCANNER PAGE -->
-<div id="scannerPage" class="card">
+
+<!-- =====================================
+     SCANNER
+===================================== -->
+
+<div
+  id="scannerPage"
+  class="card"
+>
+
 
   <div class="brand">
+
     LPK KENSEI アカデミー
+
   </div>
 
-  <h1>Scanner Presensi</h1>
+
+  <h1>
+
+    Scanner Presensi
+
+  </h1>
+
 
   <div class="desc">
-    Arahkan kamera ke barcode atau QR Code siswa.
+
+    Arahkan kamera ke barcode
+    pada name tag siswa.
+
   </div>
 
-  <button id="startBtn" onclick="mulaiKamera()">
+
+
+  <button
+    id="startBtn"
+    onclick="mulaiKamera()"
+  >
+
     📷 Aktifkan Kamera
+
   </button>
 
-  <button id="stopBtn" onclick="stopKamera()">
+
+
+  <button
+    id="stopBtn"
+    onclick="stopKamera()"
+  >
+
     ⏹ Tutup Kamera
+
   </button>
+
+
 
   <div id="reader"></div>
 
+
+
   <div id="status">
+
     Kamera belum diaktifkan.
+
   </div>
 
-  <button id="logoutBtn" onclick="logout()">
+
+
+  <button
+    id="logoutBtn"
+    onclick="logout()"
+  >
+
     🚪 Logout
+
   </button>
 
+
+
   <div class="footer">
-    LPK Kensei アカデミー<br>
+
+    LPK Kensei アカデミー
+    <br>
+
     Sistem Presensi Siswa
+
   </div>
 
+
 </div>
+
+
+
+<!-- =====================================
+     GOOGLE FORM HIDDEN
+===================================== -->
+
+<div id="googleFormContainer">
+
+
+  <iframe
+    name="hidden_iframe"
+    id="hidden_iframe"
+    style="display:none;">
+  </iframe>
+
+
+  <form
+
+    id="googleForm"
+
+    action="https://docs.google.com/forms/d/e/1FAIpQLSfs2woM86HWhUc0PHE6Xjc5Tz6bIOzEJVZ8bBqKTKzc6aVLpA/formResponse"
+
+    method="POST"
+
+    target="hidden_iframe"
+
+  >
+
+
+    <input
+
+      type="hidden"
+
+      id="barcodeInput"
+
+      name="entry.476465627"
+
+      value=""
+
+    >
+
+
+  </form>
+
+
+</div>
+
 
 
 <script>
 
-// ======================================
-// KONFIGURASI PASSWORD
-// ======================================
 
-const PASSWORD_SCANNER = "kensei2026";
+// ========================================
+// PASSWORD
+// ========================================
 
-// login aktif selama 8 jam
-const LOGIN_DURATION = 8 * 60 * 60 * 1000;
+const PASSWORD_SCANNER =
+  "kensei2026";
 
 
-// ======================================
+// Login berlaku 8 jam
+
+const LOGIN_DURATION =
+  8 * 60 * 60 * 1000;
+
+
+
+// ========================================
+// VARIABLE SCANNER
+// ========================================
+
+let scanner = null;
+
+let aktif = false;
+
+let sedangKirim = false;
+
+let terakhirScan = "";
+
+let waktuScanTerakhir = 0;
+
+
+
+// ========================================
 // LOGIN
-// ======================================
+// ========================================
 
 function login() {
+
 
   const input =
     document.getElementById("password");
 
+
   const loginStatus =
     document.getElementById("loginStatus");
+
 
   const password =
     input.value.trim();
 
-  if (password === PASSWORD_SCANNER) {
+
+
+  if (
+    password === PASSWORD_SCANNER
+  ) {
+
 
     const expired =
-      Date.now() + LOGIN_DURATION;
+      Date.now() +
+      LOGIN_DURATION;
+
 
     localStorage.setItem(
       "kenseiScannerLogin",
       expired
     );
 
+
     bukaScanner();
 
-  } else {
+
+  }
+
+
+  else {
+
 
     loginStatus.className =
       "error";
 
+
     loginStatus.innerHTML =
       "❌ Password salah.";
 
-    input.value = "";
+
+    input.value =
+      "";
+
 
     input.focus();
+
+
   }
+
 }
 
 
-// ======================================
+
+// ========================================
 // CEK LOGIN
-// ======================================
+// ========================================
 
 function cekLogin() {
 
+
   const expired =
     Number(
+
       localStorage.getItem(
         "kenseiScannerLogin"
       )
+
     );
 
+
+
   if (
+
     expired &&
+
     Date.now() < expired
+
   ) {
+
 
     bukaScanner();
 
-  } else {
+
+  }
+
+
+  else {
+
 
     localStorage.removeItem(
       "kenseiScannerLogin"
     );
+
+
   }
+
 }
 
 
-// ======================================
+
+// ========================================
 // BUKA SCANNER
-// ======================================
+// ========================================
 
 function bukaScanner() {
+
 
   document
     .getElementById("loginPage")
     .style.display =
     "none";
 
+
   document
     .getElementById("scannerPage")
     .style.display =
     "block";
+
 }
 
 
-// ======================================
+
+// ========================================
 // LOGOUT
-// ======================================
+// ========================================
 
 async function logout() {
 
+
   await stopKamera();
+
 
   localStorage.removeItem(
     "kenseiScannerLogin"
   );
 
+
   document
     .getElementById("scannerPage")
     .style.display =
     "none";
 
+
   document
     .getElementById("loginPage")
     .style.display =
     "block";
+
 
   document
     .getElementById("password")
     .value =
     "";
 
+
   document
     .getElementById("loginStatus")
     .className =
     "";
 
+
   document
     .getElementById("loginStatus")
     .innerHTML =
     "Silakan login.";
+
 }
 
 
-// ======================================
-// SCANNER
-// ======================================
 
-let scanner = null;
-let aktif = false;
-
-let terakhirScan = "";
-let waktuScanTerakhir = 0;
-
-
-// ======================================
+// ========================================
 // MULAI KAMERA
-// ======================================
+// ========================================
 
 async function mulaiKamera() {
 
+
   const status =
     document.getElementById("status");
+
 
   const startBtn =
     document.getElementById("startBtn");
 
+
   const stopBtn =
     document.getElementById("stopBtn");
+
+
 
   status.className =
     "loading";
 
+
   status.innerHTML =
     "⏳ Meminta izin kamera...";
 
+
+
   try {
+
 
     scanner =
       new Html5Qrcode("reader");
 
+
+
     await scanner.start(
 
-      {
-        facingMode: "environment"
-      },
 
       {
+
+        facingMode:
+          "environment"
+
+      },
+
+
+      {
+
         fps: 10,
 
-        qrbox: function(width, height) {
 
-          const ukuran =
-            Math.floor(
-              Math.min(
-                width,
-                height
-              ) * 0.72
-            );
+        // AREA SCAN KOTAK
 
-          return {
-            width: ukuran,
-            height: ukuran
-          };
-        }
+        qrbox:
+          function(width, height) {
+
+
+            const ukuran =
+
+              Math.floor(
+
+                Math.min(
+                  width,
+                  height
+                ) * 0.72
+
+              );
+
+
+            return {
+
+              width:
+                ukuran,
+
+              height:
+                ukuran
+
+            };
+
+
+          }
+
       },
+
 
       function(decodedText) {
 
-        prosesScan(decodedText);
+
+        prosesScan(
+          decodedText
+        );
+
 
       },
 
+
       function(errorMessage) {
-        // diabaikan
+
+
+        // Diabaikan
+
+
       }
+
     );
 
-    aktif = true;
+
+
+    aktif =
+      true;
+
+
 
     startBtn.style.display =
       "none";
 
+
     stopBtn.style.display =
       "block";
+
+
 
     status.className =
       "";
 
+
     status.innerHTML =
+
       "📷 Kamera aktif.<br>" +
-      "Arahkan kode ke dalam kotak.";
+
+      "Arahkan barcode ke dalam kotak.";
+
 
   }
 
+
   catch(error) {
 
-    console.error(error);
+
+    console.error(
+      error
+    );
+
 
     status.className =
       "error";
 
+
     status.innerHTML =
+
       "❌ Kamera gagal dibuka.<br><br>" +
+
       aman(
+
         error.message ||
+
         String(error)
+
       );
+
+
   }
+
 }
 
 
-// ======================================
-// PROSES HASIL SCAN
-// ======================================
 
-function prosesScan(decodedText) {
+// ========================================
+// PROSES SCAN
+// ========================================
+
+function prosesScan(
+  decodedText
+) {
+
 
   decodedText =
-    String(decodedText || "")
-    .trim();
 
-  if (!decodedText) {
+    String(
+      decodedText || ""
+    ).trim();
+
+
+
+  if (
+    !decodedText
+  ) {
+
     return;
+
   }
+
+
+
+  if (
+    sedangKirim
+  ) {
+
+    return;
+
+  }
+
+
 
   const sekarang =
     Date.now();
 
+
+
+  // =====================================
+  // ANTI DOUBLE SCAN
+  // kode sama ditolak selama 5 detik
+  // =====================================
+
   if (
-    decodedText === terakhirScan &&
-    sekarang - waktuScanTerakhir < 3000
+
+    decodedText ===
+      terakhirScan &&
+
+    sekarang -
+      waktuScanTerakhir <
+      5000
+
   ) {
+
+
     return;
+
+
   }
+
+
 
   terakhirScan =
     decodedText;
 
+
   waktuScanTerakhir =
     sekarang;
 
-  const status =
-    document.getElementById("status");
 
-  status.className =
-    "success";
 
-  status.innerHTML =
-    "✅ BARCODE TERBACA" +
-    "<div class='hasil'>" +
-    aman(decodedText) +
-    "</div>";
+  kirimKeGoogleForm(
+    decodedText
+  );
 
-  bunyiBeep();
-
-  setTimeout(function() {
-
-    status.className =
-      "";
-
-    status.innerHTML =
-      "📷 Siap scan siswa berikutnya...";
-
-  }, 1500);
 }
 
 
-// ======================================
+
+// ========================================
+// KIRIM KE GOOGLE FORM
+// ========================================
+
+function kirimKeGoogleForm(
+  kode
+) {
+
+
+  sedangKirim =
+    true;
+
+
+
+  const status =
+    document.getElementById(
+      "status"
+    );
+
+
+
+  status.className =
+    "loading";
+
+
+  status.innerHTML =
+
+    "⏳ Mengirim presensi..." +
+
+    "<div class='hasil'>" +
+
+    aman(kode) +
+
+    "</div>";
+
+
+
+  // Masukkan kode hasil scan
+  // ke kolom Google Form
+
+  document
+    .getElementById(
+      "barcodeInput"
+    )
+    .value =
+    kode;
+
+
+
+  // Submit Google Form
+
+  document
+    .getElementById(
+      "googleForm"
+    )
+    .submit();
+
+
+
+  // beri jeda agar request terkirim
+
+  setTimeout(
+    function() {
+
+
+      sedangKirim =
+        false;
+
+
+
+      bunyiBerhasil();
+
+
+
+      status.className =
+        "success";
+
+
+      status.innerHTML =
+
+        "✅ PRESENSI BERHASIL" +
+
+        "<div class='hasil'>" +
+
+        aman(kode) +
+
+        "</div>" +
+
+        "<small>" +
+
+        "Data telah dikirim ke Google Form" +
+
+        "</small>";
+
+
+
+      // Siap scan berikutnya
+
+      setTimeout(
+        function() {
+
+
+          status.className =
+            "";
+
+
+          status.innerHTML =
+
+            "📷 Siap scan siswa berikutnya...";
+
+
+        },
+
+        1600
+
+      );
+
+
+    },
+
+    700
+
+  );
+
+}
+
+
+
+// ========================================
 // STOP KAMERA
-// ======================================
+// ========================================
 
 async function stopKamera() {
 
+
   if (
+
     scanner &&
+
     aktif
+
   ) {
+
 
     try {
 
+
       await scanner.stop();
+
 
       scanner.clear();
 
+
     }
+
 
     catch(e) {
-      console.log(e);
+
+
+      console.log(
+        e
+      );
+
+
     }
+
+
   }
 
-  aktif = false;
-  scanner = null;
+
+
+  aktif =
+    false;
+
+
+  scanner =
+    null;
+
+
 
   document
-    .getElementById("startBtn")
+    .getElementById(
+      "startBtn"
+    )
     .style.display =
     "block";
 
+
   document
-    .getElementById("stopBtn")
+    .getElementById(
+      "stopBtn"
+    )
     .style.display =
     "none";
 
+
+
   document
-    .getElementById("status")
+    .getElementById(
+      "status"
+    )
     .innerHTML =
     "Kamera ditutup.";
+
 }
 
 
-// ======================================
-// BUNYI BEEP
-// ======================================
 
-function bunyiBeep() {
+// ========================================
+// BUNYI BERHASIL
+// ========================================
+
+function bunyiBerhasil() {
+
 
   try {
 
+
     const AudioContext =
+
       window.AudioContext ||
+
       window.webkitAudioContext;
 
-    const audioCtx =
+
+
+    const ctx =
       new AudioContext();
 
-    const oscillator =
-      audioCtx.createOscillator();
+
+
+    const osc =
+      ctx.createOscillator();
+
 
     const gain =
-      audioCtx.createGain();
+      ctx.createGain();
 
-    oscillator.connect(gain);
 
-    gain.connect(
-      audioCtx.destination
+
+    osc.connect(
+      gain
     );
 
-    oscillator.frequency.value =
-      900;
+
+    gain.connect(
+      ctx.destination
+    );
+
+
+
+    osc.frequency.value =
+      950;
+
 
     gain.gain.value =
-      0.08;
+      0.10;
 
-    oscillator.start();
 
-    setTimeout(function() {
 
-      oscillator.stop();
+    osc.start();
 
-      audioCtx.close();
 
-    }, 120);
+
+    setTimeout(
+      function() {
+
+
+        osc.stop();
+
+
+        ctx.close();
+
+
+      },
+
+      140
+
+    );
+
 
   }
+
 
   catch(e) {
-    console.log(e);
+
+
+    console.log(
+      e
+    );
+
+
   }
+
 }
 
 
-// ======================================
-// SECURITY TEXT
-// ======================================
 
-function aman(text) {
+// ========================================
+// SECURITY TEXT
+// ========================================
+
+function aman(
+  text
+) {
+
 
   const div =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
+
 
   div.textContent =
     text;
 
+
   return div.innerHTML;
+
 }
 
 
-// ======================================
-// CEK LOGIN SAAT HALAMAN DIBUKA
-// ======================================
+
+// ========================================
+// CEK LOGIN
+// ========================================
 
 window.addEventListener(
+
   "load",
+
   cekLogin
+
 );
+
 
 </script>
 
+
 </body>
+
 </html>
